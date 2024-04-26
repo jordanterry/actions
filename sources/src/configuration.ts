@@ -196,6 +196,14 @@ export class BuildScanConfig {
         return this.getTermsOfUseProp('build-scan-terms-of-use-agree', 'build-scan-terms-of-service-agree')
     }
 
+    getDevelocityAccessKey(): string {
+        return core.getInput('develocity-access-key')
+    }
+
+    getDevelocityTokenExpiry(): string {
+        return core.getInput('develocity-token-expiry')
+    }
+
     private verifyTermsOfUseAgreement(): boolean {
         if (
             (this.getBuildScanTermsOfUseUrl() !== 'https://gradle.com/terms-of-service' &&
