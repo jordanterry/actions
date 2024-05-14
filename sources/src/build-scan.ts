@@ -12,6 +12,7 @@ export async function setup(config: BuildScanConfig): Promise<void> {
         maybeExportVariable('DEVELOCITY_TERMS_OF_USE_URL', config.getBuildScanTermsOfUseUrl())
         maybeExportVariable('DEVELOCITY_TERMS_OF_USE_AGREE', config.getBuildScanTermsOfUseAgree())
     }
+    const develocityAccesskeyEnvVar = `DEVELOCITY_ACCESS_KEY`
     if (config.getDevelocityAccessKey()) {
         try {
             core.debug('Fetching short-lived token...')
@@ -22,12 +23,16 @@ export async function setup(config: BuildScanConfig): Promise<void> {
                 config.getDevelocityTokenExpiry()
             )
             if (tokens != null && !tokens.isEmpty()) {
-                core.debug(`Got token(s), setting the DEVELOCITY_ACCESS_KEY env var`)
+                core.debug(`Got token(s), setting the ${develocityAccesskeyEnvVar} env var`)
                 const token = tokens.raw()
                 core.setSecret(token)
-                core.exportVariable('DEVELOCITY_ACCESS_KEY', token)
+                core.exportVariable(develocityAccesskeyEnvVar, token)
+            } else {
+                // In case of not being able to generate a token we set the env variable to empty to avoid leaks
+                core.exportVariable(develocityAccesskeyEnvVar, '')
             }
         } catch (e) {
+            core.exportVariable(develocityAccesskeyEnvVar, '')
             core.warning(`Failed to fetch short-lived token, reason: ${e}`)
         }
     }

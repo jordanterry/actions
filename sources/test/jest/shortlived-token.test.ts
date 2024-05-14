@@ -17,6 +17,12 @@ describe('short lived tokens', () => {
         expect(develocityAccessCredentials).toBeNull()
     })
 
+    it('parse empty access key should return null', async () => {
+        let develocityAccessCredentials = DevelocityAccessCredentials.parse('');
+
+        expect(develocityAccessCredentials).toBeNull()
+    })
+
     it('access key as raw string', async () => {
         let develocityAccessCredentials = DevelocityAccessCredentials.parse('host1=key1;host2=key2');
 
@@ -56,6 +62,13 @@ describe('short lived tokens', () => {
         await expect(getToken('true', undefined, 'localhost=xyz;host1=key1', ''))
             .rejects
             .toThrow('Develocity Server URL not configured')
+    })
+
+    it('get short lived token returns null when access key is empty', async () => {
+        expect.assertions(1)
+        await expect(getToken('true', 'http://dev:3333', '', ''))
+            .resolves
+            .toBeNull()
     })
 
     it('get short lived token fails when host cannot be extracted from server url', async () => {

@@ -197,7 +197,7 @@ export class BuildScanConfig {
     }
 
     getDevelocityAccessKey(): string {
-        return core.getInput('develocity-access-key')
+        return core.getInput('develocity-access-key') || process.env['DEVELOCITY_ACCESS_KEY'] || ''
     }
 
     getDevelocityTokenExpiry(): string {
